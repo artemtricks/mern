@@ -34,25 +34,7 @@ export const remove = async (req, res) => {
   try {
     const postId = req.params.id;
 
-    const doc = await PostModel.findOneAndDelete(
-      { _id: postId }
-      // (err, doc) => {
-      //   if (err) {
-      //     console.log(err);
-      //     return res.status(404).json({
-      //       message: "Не удалось удалить статью",
-      //     });
-      //   }
-      //   if (!doc) {
-      //     return res.status(404).json({
-      //       message: "Не удалось найти статью",
-      //     });
-      //   }
-      //   res.json({
-      //     success: true,
-      //   });
-      // }
-    );
+    const doc = await PostModel.findOneAndDelete({ _id: postId });
     res.json();
   } catch (err) {
     console.log(err);
@@ -78,6 +60,30 @@ export const create = async (req, res) => {
     console.log(err);
     res.status(500).json({
       message: "Не удалось создать статью",
+    });
+  }
+};
+
+export const update = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const doc = await PostModel.updateOne(
+      { _id: postId },
+      {
+        title: req.body.title,
+        text: req.body.text,
+        imageUrl: req.body.imageUrl,
+        tags: req.body.tags,
+        user: req.userId,
+      }
+    );
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось обновить статью",
     });
   }
 };
