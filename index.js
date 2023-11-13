@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { registerValidator } from "./validations/auth.js";
 import { loginValidator } from "./validations/login.js";
-
+import cors from "cors";
 import { checkAuth, handleValidationError } from "./utils/index.js";
 import { PostController, UserController } from "./controllers/index.js";
 import { postCreteValidator } from "./validations/create.js";
@@ -16,6 +16,7 @@ mongoose
   .catch((err) => console.log("DB error", err));
 
 const app = express();
+app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
 const storage = multer.diskStorage({
@@ -41,6 +42,7 @@ app.post(
   handleValidationError,
   UserController.register
 );
+app.get("/tags", PostController.getLastsTags);
 app.get("/auth/me", checkAuth, UserController.getMe);
 app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
   res.json({
